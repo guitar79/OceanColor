@@ -1,0 +1,3 @@
+마운트안될때...
+ 
+sudo ntfsfix -d /dev/sdd2

@@ -1,0 +1,141 @@
+#Download seadas
+
+https://seadas.gsfc.nasa.gov/downloads/
+
+#for mac
+https://oceandata.sci.gsfc.nasa.gov/SeaDAS/installer/7.3.2/seadas_7.3.2_macos_installer.dmg
+
+#Installing SeaDAS
+
+
+#############################################################
+#Installing Python Environment with Anaconda ################
+#############################################################
+
+Go to the Anaconda Website and Download Python 2.7 using the graphical user interface (GUI).  
+Install Anaconda on Macintosh HD (or other common area the can be access by all users).
+
+Open a Unix Terminal Window.
+Install and/or Update the following python packages by typing the following:
+
+conda  update conda
+conda  update matplotlib
+# google search for anaconda sourceforge netcdf4 to get exact syntax
+# added by Kevin (try one belows)
+conda install source-forge netcdf4                                                                                                 
+conda install -c source-forge netcdf4 
+conda install -c cistools netcdf4
+conda update  netcdf4   # there should be an Anaconda Cloud link
+
+# copy the conda install syntax to the terminal window. 
+
+# google search for cistools  pyhdf, then follow method to get exact syntax  
+conda install cistools pyhdf
+conda install -c cistools pyhdf=0.9.0
+conda install -c source-forge pyhdf=0.9.0 
+conda  update pyhdf                                  
+
+
+conda install hdf5
+conda install  basemap
+conda install pyproj
+
+# I think you don’t need this now… (so don’t install)
+conda install pykdtree
+
+conda update pip
+
+#And just to be sure do a total update of everything…
+conda update --all 
+
+#pyresample 1.1.1
+conda install -c conda-forge pyresample=1.3.0 
+ 
+##################################################################################
+##   Setup WGET to Access HTTPS Files
+###################################################################################
+
+Get the most recent version of wget 
+For Macs, GoTo: http://rudix.org/packages/wget.html
+Download and install wget for Sierra OSX (or your current OS being used)
+
+Check that wget is installed in /usr/local/bin (or equivalent)
+$ which wget
+
+Check that /usr/local/bin (or equivalent) is in the path in the .bashrc file
+$ echo $PATH
+
+Be sure it is the latest version and that is has ssl capabilities:  
+$ wget --version
+
+GNU Wget 1.18 built on darwin15.5.0.
+
+-cares +digest -gpgme +https +ipv6 +iri +large-file -metalink +nls 
++ntlm +opie -psl +ssl/openssl 
+
+Open (or create) the ~/.netrc file and be sure you have a line in there for your URS-EarthData username and password.  The line should look like this:
+machine urs.earthdata.nasa.gov login your_user_name password your_password
+
+Be sure you are specifically registered for NASA GESDISC DATA ARCHIVE
+Become a registered used if you are not already a user
+https://urs.earthdata.nasa.gov
+
+Go to your user profile
+https://urs.earthdata.nasa.gov/profile
+Use the pulldown menu “My Applications”
+Select: “Approve More Applications”
+Choose and Approve NASA GESDISC DATA ARCHIVE
+ 
+Be sure wget can get to the latest versions of certifications. 
+
+If running on an Apple Mac OS…
+Install MacPorts (https://www.macports.org/install.php) specific for your current OSX.
+For MacPort installed openssl type the following to install the Certificate Authority:
+$ sudo port install curl-ca-bundle
+
+#xcode update is required -added by Kevin
+
+Then push its reference to the wget settings profile:
+$ echo CA_CERTIFICATE=/opt/local/share/curl/curl-ca-bundle.crt >> ~/.wgetrc
+See: http://superuser.com/questions/262809/where-do-i-install-certificates-so-that-wget-and-other-macports-programs-will-fi
+Better Yet, See: http://andatche.com/blog/2012/02/fixing-ssl-ca-certificates-with-openssl-from-macports/
+
+Create a cookie file – At the terminal prompt, type:  touch ~/.urs_cookies
+
+Example Download To Test Setup (note: all below is a single line)…
+
+$ wget load-cookies=~/.urs_cookies save-cookies=~/.urs_cookies auth-no-challenge=on --keep-session-cookies https://tads1.gesdisc.eosdis.nasa.gov/data/aqua_dprep/PM1ATTNR.003/2016/347/PM1ATTNR.P2016347.0000.003.2016347150040
+
+Or…
+$ curl  -b ~/.urs_cookies -c ~/.urs_cookies -L -n -O https://tads1.gesdisc.eosdis.nasa.gov/data/aqua_dprep/PM1ATTNR.003/2016/347/PM1ATTNR.P2016347.0000.003.2016347150040
+
+
+
+ALSO… From the Ocean Color Forum, See The Following… (https://oceancolor.gsfc.nasa.gov/forum/oceancolor/topic_show.pl?pid=27565;hl=install)
+
+You can check the openssl version that python is using by typing the following at the python prompt:
+
+>>>import ssl
+>>>ssl.OPENSSL_VERSION
+
+It is known that this version works:
+'OpenSSL 1.0.2g  1 Mar 2016'
+
+ALSO--- Your machine's openssl needs to support at least one of the following ciphers:
+ECDHE-ECDSA-CHACHA20-POLY1305
+ECDHE-ECDSA-AES256-GCM-SHA384 
+ECDHE-ECDSA-AES128-GCM-SHA256
+ECDHE-ECDSA-AES256-SHA384
+ECDHE-ECDSA-AES128-SHA256
+
+You can check that your system provides one of these with the following:
+openssl ciphers -tls -v 'HIGH:!ADH:!MD5:@STRENGTH' | egrep "ECDHE-ECDSA-CHACHA20-POLY1305|ECDHE-ECDSA-AES256-GCM-SHA384|ECDHE-ECDSA-AES128-GCM-SHA256|ECDHE-ECDSA-AES256-SHA384|ECDHE-ECDSA-AES128-SHA256" 
+
+###############################################################################################
+
+./install_ocssw.py --install-dir=/Applications/seadas-7.3.2/ocssw --git-branch=v7.3 --terra --aqua --avhrr --seawifs --goci
+
+#Re-run the installer after it finishes the “local” install to get the updates added after the bundles were created:
+sudo ./install_ocssw.py --install-dir=/Applications/seadas-7.3.2/ocssw --git-branch=v7.3 --terra --aqua --avhrr --seawifs --goci
+
+edit your .bashrc

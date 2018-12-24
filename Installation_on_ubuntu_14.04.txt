@@ -1,0 +1,264 @@
+#install on ubuntu 14.04
+
+#Install the following ubuntu packages:
+
+    $ sudo apt-get install gcc
+    $ sudo apt-get install git
+    $ sudo apt-get install git-all
+    $ sudo apt-get install curl
+    $ sudo apt-get install wget
+
+
+
+
+
+#Installing default JRE/JDK
+
+sudo apt-get update
+
+#Then, check if Java is not already installed:
+
+java -version
+
+#If it returns "The program java can be found in the following packages", Java hasn't been installed yet, so execute the following command:
+
+sudo apt-get install default-jre
+
+#This will install the Java Runtime Environment (JRE). If you instead need the Java Development Kit (JDK), which is usually needed to compile Java applications (for example Apache Ant, Apache Maven, Eclipse and IntelliJ IDEA execute the following command:
+
+sudo apt-get install default-jdk
+
+
+#Download seadas 
+#https://seadas.gsfc.nasa.gov/downloads/
+
+sh Downloads/seadas_7.4_linux64_installer.sh
+
+
+apt-get install
+
+
+=============================================================================================================================
+
+SeaDAS Installation Tutorial
+Creating a SeaDAS Environment
+
+The purpose of this tutorial is describe how to install the required software and tools to use SeaDAS (Software design for processing Satellite Data), and a python environment to automate tasks.
+
+Note: The Operating System used for this procedure was:
+
+    Kubuntu 14.04.2 LTS
+    Kernel 3.16.0-31 x86_64 GNU/Linux
+
+While there may be minor differences in the approach for other OSes, these instructions should be valid for any modern *nix environment.
+Installing SeaDAS
+
+    Install the following ubuntu packages:
+        $ sudo apt-get install gcc
+        $ sudo apt-get install git
+        $ sudo apt-get install curl
+        $ sudo apt-get install wget
+
+    Download and Install Oracle Java (OpenJDK is already installed in kubuntu, Oracle Java is recommended.):
+        $ sudo add-apt-repository ppa:webupd8team/java
+        $ sudo apt-get update
+        $ sudo apt-get install oracle-java8-installer
+        $ sudo apt-get install oracle-java8-set-default
+        $ java -version
+
+    Note: Below are the results of running java -version when preparing this tutorial.
+        Java version “1.8.0_40”
+        Java™ SE Runtime Environment (build 1.8.0_40-b25)
+        Java HotSpot™ 64-Bit Server VM (build 25.40-b25, mixed mode)
+
+    Download and Install SeaDAS:
+        Download the appropriate Linux installer from the SeaDAS Downloads page
+      #$ sh seadas_<version>_linux64_installer.sh Note: Replace <version> with the version number of the downloaded SeaDAS bundle
+      $ sh seadas_7.4_linux64_installer.sh
+
+    Install OCSSW software (SeaDAS data processing components)
+    This can be done within the GUI or using the command line installer.
+    Instructions for the command line installer can be found on the SeaDAS Downloads page
+    If your network connection is not stable and high speed to the U.S., there may be issues with retrieving the large data bundles.
+    The following instructions allow for an “offline” installation that circumvents many potential network connection problems.
+        Download the Git bundles, README, OCSSW_env.bash, sha1sum file, and install script:
+            $ cd /tmp
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/install_ocssw.py
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/README
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/OCSSW_bash.env
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/bundles.sha256sum
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/scripts.bundle
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/common.bundle
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/bin-linux_64.bundle
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/bin3-linux_64.bundle
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/ocrvc.bundle
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/modis.bundle
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/modisa.bundle
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/hmodisa.bundle
+            $ wget -cN http://oceandata.sci.gsfc.nasa.gov/ocssw/seawifs.bundle
+        Make the install script executable, and run it:
+            $ chmod +x install_ocssw.py
+            $ ./install_ocssw.py –install-dir=<seadas-<version> install directory>/ocssw –git-branch=v<version> –local=/tmp –aqua –seawifs
+        Re-run the installer after it finishes the “local” install to get the updates added after the bundles were created:
+            sudo ./install_ocssw.py –install-dir=<seadas-<version> install directory>/ocssw –git-branch=v<version> –aqua –seawifs
+
+Installing Python Virtual Environment
+The following is not explicitly required for SeaDAS, but does provide tools that are useful when working with satellite data and implementing SeaDAS tools in a script environment.
+
+    Install the following ubuntu packages:
+        $ sudo apt-get install python-dev
+        $ sudo apt-get install python-pip
+        $ sudo apt-get install python-virtualenv
+        (libraries for matplotlib)
+        $ sudo apt-get install libfreetype6-dev libxft-dev
+        (libraries for scipy)
+        $ sudo apt-get install libblas3gf libc6 libgcc1 libgfortran3 liblapack3gf libstdc++6
+        build-essential gfortran python-all-dev
+        (installing matplotlib in the python global environment)
+        $ sudo apt-get install python-numpy python-scipy python-matplotlib ipython
+        ipython-notebook python-pandas python-sympy python-nose
+        $ sudo apt-get install python-mpltoolkits.basemap
+        (this tool is used by the hdf compilation process)
+        $ sudo apt-get install m4
+        (this package contains the hdf.h library required by the python netCDF4 compilation process)
+        $ sudo apt-get install libhdf4-dev
+
+    Install linux hdf5 libraries:
+        Download the hdf5 source code:
+            #$ wget http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.14.tar.gz
+            $ wget http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.10.1.tar.gz
+        Decompress the file:
+            #$ tar -xzvf hdf5-1.8.14.tar.gz && cd hdf5-1.8.14
+            $ tar -xzvf hdf5-1.10.1.tar.gz && cd hdf5-1.10.1
+        Compile source code and install the library in linux:
+            #$ ./configure –prefix=/usr/local –enable-shared –enable-hl –with-zlib=/usr/local
+            $ ./configure --prefix=/usr/local --enable-shared --enable-hl --with-zlib=/usr/local
+            $ make -j 4
+            $ sudo make install
+            Note: If an error is launched regarding the zlib is missing, you have to install that library and then compile again the hdf5 library
+        Download the zlib source code:
+            $ wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4/zlib-1.2.8.tar.gz
+        Decompress the file:
+            $ tar -xzvf zlib-1.2.8.tar.gz && cd zlib-1.2.8
+        Compile source code and install the library in linux:
+            #$ ./configure –prefix=/usr/local
+            $ ./configure --prefix=/usr/local
+            $ make -j 4
+            $ sudo make install
+
+    Install linux netCDF4 libraries:
+        Download the netCDF4 source code:
+            $ wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-4.3.3.tar.gz
+        Decompress the file:
+            $ tar -xzvf netcdf-4.3.3.tar.gz && cd netcdf-4.3.3
+        Compile source code and install the library in linux:
+            #$ LDFLAGS=-L/usr/local/lib CPPFLAGS=-I/usr/local/include ./configure –enable-netcdf-4 –enable-dap –enable-shared –prefix=/usr/local
+            $ LDFLAGS=-L/usr/local/lib CPPFLAGS=-I/usr/local/include ./configure --enable-netcdf-4 --enable-dap --enable-shared --prefix=/usr/local
+            $ make -j 4
+            $ sudo make install
+
+    Create OceanColor Python Virtual Environment, inheriting the global libraries. You can create this environment in a folder where you have permissions; for example, we can use the following folder scheme:
+        /
+        |–home
+        |  |–user
+        |  |  |–OceanColorProject
+        |  |  |  |–OceanColorVirtualEnv
+        |  |  |  |–PythonScriptsSourceCode
+        |  |  |  |–activate_oceancolor_virtualenv.sh
+        $ mkdir /home/user/OceanColorProject
+        $ cd /home/user/OceanColorProject
+        $ virtualenv –system-site-packages OceanColorVirtualEnv
+
+    Make a script to activate the virtual environment and use it to enter the virtual environment:
+        $ echo “source OceanColorVirtualEnv/bin/activate” > activate_oceancolor_virtualenv.sh
+        $ chmod +x activate_oceancolor_virtualenv.sh
+        $ . activate_oceancolor_virtualenv.sh
+        Note: Observe the dot and space at the beginning of the last command
+
+    Once inside the virtualenv you can install the Python libraries used by this particular project. Prior to that, check that we are using the respective pip command of the virtualenv:
+        (OceanColorVirtualEnv)$ which pip
+        (OceanColorVirtualEnv)$ pip install pyproj
+        (OceanColorVirtualEnv)$ pip install pyresample
+
+    Install the pyhdf Python module:
+        Download the pyhdf source code:
+            $ wget http://hdfeos.org/software/pyhdf/pyhdf-0.9.0.tar.gz
+        Decompress the file:
+            $ tar -xzvf pyhdf-0.9.0.tar.gz && cd pyhdf-0.9.0
+        Compile source code and install the library in the Python virtualenv:
+            (OceanColorVirtualEnv)$ python setup.py install
+
+    Install the netCDF4 Python module:
+        Download the netCDF4 source code
+            wget https://netcdf4-python.googlecode.com/files/netCDF4-1.0.7.tar.gz
+        Decompress the file:
+            $ tar -xzvf netCDF4-1.0.7.tar.gz && cd netCDF4-1.0.7
+        Compile source code and install the library in the Python virtualenv:
+            (OceanColorVirtualEnv)$ python setup.py install
+
+    Check if all required libraries are satisfied:
+        (OceanColorVirtualEnv)$ pip list
+
+    Note: A Virtual Environment is a tool to keep the dependencies required by different projects in separate places, by creating virtual Python environments for them. It solves the “Project X depends on version 1.x but, Project Y needs 4.x” dilemma, and keeps your global site-packages directory clean and manageable. However, if you want you can omit the virtual environment creation by omitting items 4 and 5.
+
+
+Set the required environment variables
+
+In order to maintain a clean environment we are going to set the required environment variable in the file <path>/OceanColorVirtualEnv/bin/activate adding the following lines:
+
+    export SEADASPATH=<path>/seadas-7.1
+    export PATH=PATH:SEADASPATH/bin
+    export PYTHON_PROGRAMS=<path>/python_programs
+    export PYTHONPATH=PYTHONPATH:
+    PYTHON_PROGRAMS:$PYTHON_PROGRAMS/utilities
+    export LOCAL_RESOURCES=$PYTHON_PROGRAMS/local_procesing_resources
+    export OCSSWROOT=$SEADASPATH/ocssw
+    export OCSSW_DEBUG=0 # set to 1 for debugging
+    source $OCSSWROOT/OCSSW_bash.env
+
+    export SEADASPATH=/home/guitar79/seadas-7.4
+    export PATH=PATH:SEADASPATH/bin
+    export PYTHON_PROGRAMS=/home/guitar79/OC/python_programs
+    export PYTHONPATH=PYTHONPATH:PYTHON_PROGRAMS:$PYTHON_PROGRAMS/utilities
+    export LOCAL_RESOURCES=$PYTHON_PROGRAMS/local_procesing_resources
+    export OCSSWROOT=$SEADASPATH/ocssw
+    export OCSSW_DEBUG=0 # set to 1 for debugging
+    source $OCSSWROOT/OCSSW_bash.env
+
+
+Note: you have to change <path> for the location that you choose in your case. On the other hand, if you did not create a python virtual environment, you can add these lines in the file ~/.bashrc
+
+
+---------------------------------------------------------------------------------------------
+In short, Git will need to be build from source against the openssl version of libcurl instead of the default gnutls.  The following instructions work on Ubuntu
+14.04 and should also work for any other OS (although may need modification for different package management systems - e.g. yum).
+
+$ sudo apt-get install build-essential libcurl4-openssl-dev
+$ cd ~
+#$ wget https://github.com/git/git/archive/v2.11.0.zip -O git_2.11.0.zip
+#$ unzip git_2.11.0.zip
+
+#master file download and install
+
+$ cd git-2.11.0
+#$ make prefix=~/usr/local all && make prefix=~/usr/local install
+$ make prefix=/usr/local all && make prefix=/usr/local install
+
+NOTE: this locally built version of GIT is installed in ~/usr/local/bin/ and your shell environment PATH should be modified to point to
+the local version of Git. For example, export the PATH variable in bash:
+
+#$ export PATH=~/usr/local/bin:$PATH
+$ export PATH=/usr/local/bin:$PATH
+
+$ which git
+/home/$USERNAME/usr/local/bin/git
+
+$ git --version
+git version 2.11.0
+
+$ git ls-remote
+"https://oceandata.sci.gsfc.nasa.gov/git/obpgpyutils/" HEAD
+be40eb6871cf353024c22bdd8e4b014b91bc414a        HEAD
+
+As you can see, Git is able to connect to OBPG NASA and negotiate the SSL Certificate as well as the TLS Cipher.
+The HEAD request shows the current hash of the git repository. 
