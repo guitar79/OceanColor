@@ -21,10 +21,13 @@ sudo apt-get install wget
 
 #Download and Install Oracle Java (OpenJDK is already installed in kubuntu, Oracle Java is recommended.):
 
-sudo add-apt-repository ppa:webupd8team/java
-sudo apt-get update
-sudo apt-get install oracle-java8-installer
-sudo apt-get install oracle-java8-set-default
+#sudo add-apt-repository ppa:webupd8team/java
+#sudo apt-get update
+#sudo apt-get install oracle-java8-installer
+#sudo apt-get install oracle-java8-set-default
+
+#Installation new java version
+sudo apt install openjdk-11-jdk
 java -version
 
 #Note: Below are the results of running java -version when preparing this tutorial.
